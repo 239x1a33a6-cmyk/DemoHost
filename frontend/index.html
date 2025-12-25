@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,14 +90,13 @@
         }
     </style>
 </head>
-
 <body>
 
     <div class="calculator-container">
         <h2>E-Forest Calculator</h2>
 
-        <input id="num1" type="number" placeholder="Number enter chey ra">
-        <input id="num2" type="number" placeholder="Inko number ra ">
+        <input id="num1" type="number" placeholder="Enter first number">
+        <input id="num2" type="number" placeholder="Enter second number">
 
         <select id="operator">
             <option value="+">+</option>
@@ -107,37 +105,44 @@
             <option value="/">/</option>
         </select>
 
-        <button onclick="calculate()">Cheyalna</button>
+        <button id="calculateBtn">Calculate</button>
 
         <h3 id="result"></h3>
     </div>
 
     <script>
-        async function calculate() {
+        const btn = document.getElementById("calculateBtn");
+        btn.addEventListener("click", async () => {
             const num1 = Number(document.getElementById("num1").value);
             const num2 = Number(document.getElementById("num2").value);
             const operator = document.getElementById("operator").value;
+            const resultDiv = document.getElementById("result");
+
+            resultDiv.innerText = "Calculating...";
+            btn.disabled = true;
 
             try {
-                const response = await fetch("http://localhost:3000/calculate", {
+                const response = await fetch("https://e-forest.onrender.com/calculate", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ num1, num2, operator })
                 });
 
                 const data = await response.json();
-                document.getElementById("result").innerText =
-                    data.result !== undefined ? "Result: " + data.result : data.error;
+                if (data.result !== undefined) {
+                    resultDiv.innerText = "Result: " + data.result;
+                } else if (data.error) {
+                    resultDiv.innerText = "Error: " + data.error;
+                }
 
             } catch (err) {
-                console.error("Error connecting to server:", err);
-                document.getElementById("result").innerText = "Connection failed";
+                console.error("Connection failed:", err);
+                resultDiv.innerText = "Connection failed";
             }
-        }
+
+            btn.disabled = false;
+        });
     </script>
 
 </body>
-
 </html>
