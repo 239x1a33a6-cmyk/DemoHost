@@ -17,7 +17,7 @@ app.use(express.json());
 
 // ✅ Test route to check server status
 app.get("/", (req, res) => {
-    res.send("Backend is running successfully!");
+    res.send("Hi E-Forest Welcome");
 });
 
 // ✅ Calculator API
