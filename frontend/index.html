@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Forest Calculator</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 320px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #ffeb3b;
+        }
+
+        input,
+        select,
+        button {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input,
+        select {
+            background-color: #fff;
+            color: #333;
+        }
+
+        input:focus,
+        select:focus {
+            box-shadow: 0 0 10px #ffeb3b;
+        }
+
+        button {
+            background-color: #ffeb3b;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ffc107;
+            transform: scale(1.05);
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #00e676;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .calculator-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            input,
+            select,
+            button {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator-container">
+        <h2>E-Forest Calculator</h2>
+
+        <input id="num1" type="number" placeholder="Number enter chey ra">
+        <input id="num2" type="number" placeholder="Inko number ra ">
+
+        <select id="operator">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+
+        <button onclick="calculate()">Cheyalna</button>
+
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        async function calculate() {
+            const num1 = Number(document.getElementById("num1").value);
+            const num2 = Number(document.getElementById("num2").value);
+            const operator = document.getElementById("operator").value;
+
+            try {
+                const response = await fetch("http://localhost:3000/calculate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ num1, num2, operator })
+                });
+
+                const data = await response.json();
+                document.getElementById("result").innerText =
+                    data.result !== undefined ? "Result: " + data.result : data.error;
+
+            } catch (err) {
+                console.error("Error connecting to server:", err);
+                document.getElementById("result").innerText = "Connection failed";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
